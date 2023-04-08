@@ -24,3 +24,12 @@
     width: 300px;
     padding: 10px;
 }
+
+.cmtItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    border:1px solid rgb(183, 183, 183);
+    border-radius: 5px;
+}
