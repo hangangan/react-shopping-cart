@@ -4,18 +4,22 @@ import CartProducts from './CartProducts';
 import { useCart } from 'contexts/cart-context';
 
 import * as S from './style';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const { products, total, isOpen, openCart, closeCart } = useCart();
-
+  const navigate = useNavigate();
   const handleCheckout = () => {
     if (total.productQuantity) {
-      alert(
+      console.log(
         `Checkout - Subtotal: ${total.currencyFormat} ${formatPrice(
           total.totalPrice,
           total.currencyId
         )}`
       );
+      // 跳转到checkout页面
+      navigate('/checkout', { state: { products, total } })
+      
     } else {
       alert('Add some product in the cart!');
     }
