@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import Loader from 'components/Loader';
-import { GithubCorner, GithubStarButton } from 'components/Github';
+// import { GithubCorner, GithubStarButton } from 'components/Github';
 import Recruiter from 'components/Recruiter';
 import Filter from 'components/Filter';
 import Products from 'components/Products';
@@ -21,12 +21,12 @@ function App() {
   return (
     <S.Container>
       {isFetching && <Loader />}
-      <GithubCorner />
+      {/* <GithubCorner /> */}
       <Recruiter />
       <S.TwoColumnGrid>
         <S.Side>
           <Filter />
-          <GithubStarButton />
+          {/* <GithubStarButton /> */}
         </S.Side>
         <S.Main>
           <S.MainHeader>
