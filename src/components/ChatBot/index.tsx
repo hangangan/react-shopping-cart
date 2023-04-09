@@ -3,7 +3,7 @@ import './index.css';
 import { useCart } from 'contexts/cart-context';
 import { FormContext } from 'contexts/form-context/FormContextProvider';
 import { routeParams, formFillParams } from './helpMeTypes';
-import { askApi } from 'openai/api';
+import { askApi } from '../../openai/api';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -136,17 +136,17 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
     // let res = ''
     setLoading(false);
     console.log(res);
-    // try {
-    //   //标准JSON：[{"type":"RouteChange","desc":"进入商品详情页","params":{"path":"/commodity"}}]
-    //   console.log(res?.substring(res.indexOf('['), res.lastIndexOf(']') + 1));
-    //   let actions = JSON.parse(
-    //     res?.substring(res.indexOf('['), res.lastIndexOf(']') + 1) || ''
-    //   );
-    //   setSteps(actions);
-    //   handleActions(actions);
-    // } catch (e) {
-    //   console.log(e);
-    // }
+    try {
+      //标准JSON：[{"type":"RouteChange","desc":"进入商品详情页","params":{"path":"/commodity"}}]
+      console.log(res?.substring(res.indexOf('['), res.lastIndexOf(']') + 1));
+      let actions = JSON.parse(
+        res?.substring(res.indexOf('['), res.lastIndexOf(']') + 1) || ''
+      );
+      setSteps(actions);
+      handleActions(actions);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleActions = (actions: any) => {
