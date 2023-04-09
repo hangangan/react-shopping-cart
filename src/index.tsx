@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Form, Route, Routes } from 'react-router-dom';
 /* Theme */
 import { ThemeProvider } from 'commons/style/styled-components';
 import { theme } from 'commons/style/theme';
@@ -16,37 +16,42 @@ import App from 'components/App';
 
 import Checkout from 'pages/checkout';
 import ChatBot from 'components/ChatBot';
+import { FormContextProvider } from 'contexts/form-context/FormContextProvider';
 
 const root = document.getElementById('root')!;
 const container = ReactDOMClient.createRoot(root);
 
 const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   console.log(e.target.value);
-}
+};
 const handleInputEnter = (e?: KeyboardEvent) => {
   console.log(e);
-}
-const searchResult = <div>搜索结果</div>
+};
+const searchResult = <div>搜索结果</div>;
 container.render(
   <StrictMode>
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <ProductsProvider>
-          <div style={{
-            position:'relative'
-          }}>
-            <ChatBot 
-              onChange={handleInputChange}
-              onSearch={handleInputEnter}
-              SearchResult={searchResult}
-            ></ChatBot>
-          <CartProvider>
-            <Routes>
-              <Route path="/" Component={App} />
-              <Route path="/checkout" Component={Checkout} />
-            </Routes>
-          </CartProvider>
+          <div
+            style={{
+              position: 'relative',
+            }}
+          >
+            <CartProvider>
+              <FormContextProvider>
+                <ChatBot
+                  onChange={handleInputChange}
+                  onSearch={handleInputEnter}
+                  SearchResult={searchResult}
+                ></ChatBot>
+                <Routes>
+                  <Route path="/" Component={App} />
+                  <Route path="/checkout" Component={Checkout} />
+                </Routes>
+              </FormContextProvider>
+            </CartProvider>
           </div>
         </ProductsProvider>
       </ThemeProvider>

@@ -1,5 +1,7 @@
 import React from 'react';
 import './index.css';
+import { useCart } from 'contexts/cart-context';
+import { FormContext } from 'contexts/form-context/FormContextProvider';
 
 interface Props {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // 输入框内容变化
@@ -9,6 +11,11 @@ interface Props {
 
 export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
   const [visible, setVisible] = React.useState(false);
+  // 在这里获得表单数据
+  const {form} = React.useContext(FormContext);
+  // 在这里获取到了购物车的数据！！！
+  const { products, total } = useCart();
+  //#region
   // 监听cmd + K  ，显示隐藏
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -17,7 +24,9 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
         e.preventDefault();
         e.stopPropagation();
       }
-      console.log(1);
+      console.log(products, 'products');
+      console.log(total, 'total');
+      console.log(form, 'form');
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -52,7 +61,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [onSearch]);
-
+  //#endregion
   return (
     <div
       className="chat-bot"

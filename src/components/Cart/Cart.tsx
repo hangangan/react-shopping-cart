@@ -11,12 +11,6 @@ const Cart = () => {
   const navigate = useNavigate();
   const handleCheckout = () => {
     if (total.productQuantity) {
-      console.log(
-        `Checkout - Subtotal: ${total.currencyFormat} ${formatPrice(
-          total.totalPrice,
-          total.currencyId
-        )}`
-      );
       // 跳转到checkout页面
       navigate('/checkout', { state: { products, total } })
       

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import './index.css';
+import { FormContext } from 'contexts/form-context/FormContextProvider';
 
 const formItemList = [
   {
@@ -36,17 +37,10 @@ const formItemList = [
 ];
 
 export default function Checkout() {
-  const [form, setForm] = useState({
-    name: '',
-    tel: '',
-    city: '',
-    state: '',
-    address: '',
-    zip: '',
-  });
+  const {form,setForm} = React.useContext(FormContext);
   const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(form);
+    alert('提交成功');
   };
   return (
     <div className="checkout-page">
