@@ -5,6 +5,9 @@ import { FormContext } from 'contexts/form-context/FormContextProvider';
 import { routeParams, formFillParams } from './helpMeTypes';
 import { askApi } from '../../openai/api';
 import { useNavigate } from 'react-router-dom';
+import { IProduct } from 'models';
+import { Form } from 'contexts/form-context/FormContextProvider';
+import { useProducts } from 'contexts/products-context';
 
 interface Props {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // 输入框内容变化
@@ -22,10 +25,40 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
   const [userAsk, setUserAsk] = useState<string>('');
 
   // 在这里获得表单数据
-  const { form } = React.useContext(FormContext);
+  const { form, setForm } = React.useContext(FormContext);
   // 在这里获取到了购物车的数据！！！
   // 很好，很优秀！！
-  const { products, total } = useCart();
+  const { products, total, addProduct, openCart } = useCart();
+
+  const productsData = useProducts().products
+
+  const helpAddToCart = (id: number) => {
+    console.log('加购回调函数ing');
+    const product = productsData.filter((item) => item.id === id)[0];
+    product && addProduct({ ...product, quantity: 1 });
+    openCart();
+  };
+
+  const helpChangeRoute = (path: string) => {
+    console.log('路由回调函数ing');
+    navigate(path);
+  };
+
+  const helpFillForm = (form: Form) => {
+    console.log('表单填写回调函数ing');
+    setForm(form);
+  };
+
+  const helpConfirmLocation = () => {
+    console.log('确认地址回调函数ing');
+    alert('确认地址信息成功！当前地址信息' + JSON.stringify(form));
+  };
+
+  const helpPay = () => {
+    console.log('确认支付回调函数ing');
+    alert('Add some product in the cart!');
+  };
+
   //#region
   // 监听cmd + K  ，显示隐藏
   React.useEffect(() => {
@@ -73,7 +106,6 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
     };
   }, [onSearch]);
   //#endregion
-
 
   // const handleActions = (actions: any) => {
   //   setCurstep(-1)
@@ -126,22 +158,22 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
   const askChat = (e: React.MouseEvent) => {
     // onSearch && onSearch();
     // 接入chatGPT
-    handleUserAsk()
+    handleUserAsk();
   };
 
   const handleUserAsk = async () => {
     setLoading(true);
     setSteps([]);
-    let res = await askApi(userAsk); 
+    let res = await askApi(userAsk);
     // let res = ''
     setLoading(false);
     console.log(res);
     try {
       //标准JSON：[{"type":"RouteChange","desc":"进入商品详情页","params":{"path":"/commodity"}}]
-      console.log(res?.substring(res.indexOf('['), res.lastIndexOf(']') + 1));
       let actions = JSON.parse(
         res?.substring(res.indexOf('['), res.lastIndexOf(']') + 1) || ''
       );
+      console.log(actions);
       setSteps(actions);
       handleActions(actions);
     } catch (e) {
@@ -158,31 +190,31 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
         setCurstep(curStepRef.current);
         if (item.type === 'RouteChange') {
           console.log('进行路由跳转');
-          navigate(item.params.path);
+          helpChangeRoute(item.params.path);
         } else if (item.type === 'ClickEvent') {
           console.log('点击事件处理');
-          switch (item.params.eleId) {
+          switch (item.actionId) {
             case 'addToCart':
-              console.log('加购' + item.params.props.cmtName);
-              // helpCmtCallback.helpAddToCart(item.params.props.cmtName);
+              console.log('加购' + item.params.productId);
+              helpAddToCart(item.params.productId);
+              break;
+            case 'confirmLocation':
+              console.log('确认地址信息');
+              helpConfirmLocation();
+              break;
+            case 'confirmPay':
+              console.log('确认支付');
+              helpPay();
               break;
             default:
               break;
           }
         } else if (item.type === 'FormFill') {
           console.log('表单填写');
-          switch (item.params.eleId) {
-            case 'LocationBase':
-              console.log('填写地址信息' + item.params.value);
-              // helpPayCallback?.helpFillLocation(item.params.value);
-              break;
-            case 'LocationUsername':
-              console.log('填写姓名信息' + item.params.value);
-              // helpPayCallback?.helpFillName(item.params.value);
-              break;
-            case 'LocationPhone':
-              console.log('填写电话信息' + item.params.value);
-              // helpPayCallback?.helpFillPhone(item.params.value);
+          switch (item.action) {
+            case 'fillLocation':
+              console.log('填写地址信息' + item.params);
+              helpFillForm(item.params);
               break;
             default:
               break;
@@ -191,7 +223,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
       }, 5000 * i);
     }
   };
-  
+
   return (
     <div
       className="chat-bot"

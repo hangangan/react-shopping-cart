@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-interface Form {
+export interface Form {
   name: string;
   tel: string;
   city: string;
@@ -22,7 +22,7 @@ const FormContext = React.createContext<{
   setForm: React.Dispatch<React.SetStateAction<Form>>;
 }>({
   form: defaultForm,
-  setForm: () => {},
+  setForm: () => {}, 
 });
 const FormContextProvider: FC = (props) => {
   const [form, setForm] = React.useState<Form>(defaultForm);

@@ -57,6 +57,7 @@ export default function Checkout() {
                   className="form-input"
                   type={item.type}
                   id={item.id}
+                  value={form[item.id as 'name']}
                   onChange={(e) =>
                     setForm({
                       ...form,
