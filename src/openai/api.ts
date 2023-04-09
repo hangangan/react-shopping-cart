@@ -1,6 +1,6 @@
 import { OpenAIApi,Configuration } from "openai"
-import { GPT_KEY,ORG_KEY } from "../common/const";
-import {testPrompt} from "../common/prompts/testPrompt";
+import { GPT_KEY,ORG_KEY } from "./const";
+import {testPrompt} from "./testPrompt";
 
 const apiClient = new OpenAIApi(
     new Configuration({
