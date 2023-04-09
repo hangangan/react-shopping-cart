@@ -35,6 +35,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
   const helpAddToCart = (id: number) => {
     console.log('加购回调函数ing');
     const product = productsData.filter((item) => item.id === id)[0];
+    console.log(product,products)
     product && addProduct({ ...product, quantity: 1 });
     openCart();
   };
@@ -46,6 +47,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
 
   const helpFillForm = (form: Form) => {
     console.log('表单填写回调函数ing');
+    console.log(form)
     setForm(form);
   };
 
@@ -211,7 +213,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
           }
         } else if (item.type === 'FormFill') {
           console.log('表单填写');
-          switch (item.action) {
+          switch (item.actionId) {
             case 'fillLocation':
               console.log('填写地址信息' + item.params);
               helpFillForm(item.params);
