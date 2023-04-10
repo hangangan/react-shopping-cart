@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { IProduct } from 'models';
 import { Form } from 'contexts/form-context/FormContextProvider';
 import { useProducts } from 'contexts/products-context';
+import { Steps } from '@arco-design/web-react';
+const Step = Steps.Step;
 
 interface Props {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // 输入框内容变化
@@ -20,7 +22,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
   const [visible, setVisible] = React.useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [steps, setSteps] = useState<[routeParams | formFillParams][]>([]);
-  const [curStep, setCurstep] = useState<number>(-1);
+  const [curStep, setCurstep] = useState<number>(0);
   const curStepRef = useRef(curStep);
   const [userAsk, setUserAsk] = useState<string>('');
 
@@ -30,12 +32,12 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
   // 很好，很优秀！！
   const { products, total, addProduct, openCart } = useCart();
 
-  const productsData = useProducts().products
+  const productsData = useProducts().products;
 
   const helpAddToCart = (id: number) => {
     console.log('加购回调函数ing');
     const product = productsData.filter((item) => item.id === id)[0];
-    console.log(product,products)
+    console.log(product, products);
     product && addProduct({ ...product, quantity: 1 });
     openCart();
   };
@@ -47,7 +49,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
 
   const helpFillForm = (form: Form) => {
     console.log('表单填写回调函数ing');
-    console.log(form)
+    console.log(form);
     setForm(form);
   };
 
@@ -190,6 +192,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
       setTimeout(() => {
         curStepRef.current++;
         setCurstep(curStepRef.current);
+        console.log(curStepRef.current)
         if (item.type === 'RouteChange') {
           console.log('进行路由跳转');
           helpChangeRoute(item.params.path);
@@ -222,7 +225,7 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
               break;
           }
         }
-      }, 5000 * i);
+      }, 2000 * i);
     }
   };
 
@@ -255,28 +258,31 @@ export default function ChatBot({ onChange, onSearch, SearchResult }: Props) {
       <div className="search-result-container">
         {loading ? (
           <div>Loading....</div>
-        ) : (
+        ) : steps.length ? (
           <>
-            <h5>您需要完成一下步骤：</h5>
-            <div>
-              {JSON.parse(JSON.stringify(steps)).map(
-                (item: any, index: number) => (
-                  <div key={index}>
-                    {item.desc}
-                    {curStep > index && (
-                      <span style={{ color: 'green' }}>已完成</span>
-                    )}
-                    {curStep === index && (
-                      <span style={{ color: 'blue' }}>进行中</span>
-                    )}
-                    {curStep < index && (
-                      <span style={{ color: 'red' }}>未完成</span>
-                    )}
-                  </div>
-                )
-              )}
+            <h5>您需要完成以下步骤：</h5>
+            <div
+              style={{
+                backgroundColor: '#fff',
+                padding: '10px',
+                borderRadius: '5px',
+              }}
+            >
+              <Steps
+                direction="vertical"
+                current={curStep}
+                style={{ maxWidth: 780,maxHeight:300,overflow:'scroll' }}
+              >
+                {JSON.parse(JSON.stringify(steps)).map(
+                  (item: any, index: number) => (
+                    <Step title={item.desc} key={index} />
+                  )
+                )}
+              </Steps>
             </div>
           </>
+        ) : (
+          <div>Hello，这里是您的智能助手，请问我可以帮您做些什么呢~</div>
         )}
       </div>
     </div>

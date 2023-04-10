@@ -17,6 +17,7 @@ import App from 'components/App';
 import Checkout from 'pages/checkout';
 import ChatBot from 'components/ChatBot';
 import { FormContextProvider } from 'contexts/form-context/FormContextProvider';
+import "@arco-design/web-react/dist/css/arco.css";
 
 const root = document.getElementById('root')!;
 const container = ReactDOMClient.createRoot(root);
